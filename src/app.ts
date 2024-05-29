@@ -17,7 +17,8 @@ app.get('/', (req: Request, res: Response) => { res.send('Hello World') })
 // app.use('/api/users', userRoutes);
 
 // Database connection
-mongoose.connect(process.env.MONGO_URI!)
+
+mongoose.connect(process.env.MONGODB_URI!)
   .then(() => console.log('Database connected'))
   .catch((err) => console.log(err))
 
