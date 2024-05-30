@@ -2,7 +2,7 @@ import express, { Application, Request, Response } from 'express'
 import mongoose from 'mongoose'
 import dotenv from 'dotenv'
 import cors from 'cors'
-// import userRoutes from './routes/users'
+import userRoutes from './routes/userRoutes'
 
 dotenv.config()
 
@@ -12,12 +12,11 @@ const app: Application = express()
 app.use(cors())
 app.use(express.json())
 
-//Routes
-app.get('/', (req: Request, res: Response) => { res.send('Hello World') })
-// app.use('/api/users', userRoutes);
+// Routes
+app.use(userRoutes)
+
 
 // Database connection
-
 mongoose.connect(process.env.MONGODB_URI!)
   .then(() => console.log('Database connected'))
   .catch((err) => console.log(err))
