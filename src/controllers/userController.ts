@@ -1,16 +1,18 @@
 import { Request, Response } from 'express'
-import { UserService } from '../services/userService'
+import UserService from '../services/userService'
 
 export class UserController {
-  private userService: UserService
+  private userService: typeof UserService
 
-  constructor(userService: UserService) {
+  constructor(userService: typeof UserService) {
     this.userService = userService
   }
 
+  // TODO -- delete these methods, they should be in authController
+  // this file will be for performing user actions, not creating or updating them
   async createUser(req: Request, res: Response) {
-    const { firstName, lastName, email, password } = req.body
-    const user = await this.userService.createUser(firstName, lastName, email, password)
+    const { firstName, lastName, email } = req.body
+    const user = await this.userService.createUser(req.body)
     res.status(201).json(user)
   }
 
