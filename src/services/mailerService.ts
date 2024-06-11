@@ -34,7 +34,7 @@ class MailerService {
         },
         Subject: { Data: 'Your Magic Link' },
       },
-      Source: 'your-email@example.com',
+      Source: process.env.AWS_VERIFIED_EMAIL,
     }
     try {
       await MailerService.sendEmail(params)
