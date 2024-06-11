@@ -19,13 +19,14 @@ class MagicLinkService extends Strategy {
               .then((newUser: IUser) => {
                 user = newUser
                 MailerService.sendMagicLink(email, 'http://localhost:3000/auth/magic-link')
+                  .then(() => {
+                    done(null, user)
+                  })
+                  .catch(err => {
+                    return done(err)
+                  })
               })
-              .then(() => {
-                done(null, user)
-              })
-              .catch(err => {
-                return done(err)
-              })
+
               .catch(err => {
                 return done(err)
               })
