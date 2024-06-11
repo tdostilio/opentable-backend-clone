@@ -1,25 +1,8 @@
 import UserService from '../services/userService'
-import passport from 'passport'
-import { Strategy as GoogleStrategy } from 'passport-google-oauth20'
+import { Strategy as GoogleStrategy, VerifyCallback } from 'passport-google-oauth20'
 import { Profile } from 'passport'
-import { VerifyCallback } from 'passport-google-oauth20'
-
 import User from '../models/userModel'
 
-
-interface GoogleProfile extends Profile {
-  _json: {
-    email: string | undefined,
-    email_verified: boolean,
-    name: string,
-    picture: string,
-    given_name: string,
-    family_name: string
-  }
-  id: string
-}
-
-// using "any" because the type definition for GoogleStrategy is currently broken
 class GoogleOAuthService extends GoogleStrategy {
   constructor() {
     super(
@@ -29,14 +12,21 @@ class GoogleOAuthService extends GoogleStrategy {
         callbackURL: '/auth/google/callback'
       },
       async (accessToken: string, refreshToken: string, profile: Profile, done: VerifyCallback) => {
-        // const { }
-        // const { email, given_name, family_name, picture } = profile
-        // lookup user by email
+        const { id, displayName, emails, name, photos } = profile
+        const userData = {
+          id,
+          displayName,
+          email: emails ? emails[0].value : undefined,
+          firstName: name ? name.givenName : undefined,
+          lastName: name ? name.familyName : undefined,
+          picture: photos ? photos[0].value : undefined
+        }
+        const { email, firstName, lastName, picture } = userData
         let existingUser
         try {
-          existingUser = await User.findOne({ email: profile.emails![0].value })
+          existingUser = await User.findOne({ email })
         } catch (err) {
-          return done(err, undefined)
+          return done(err)
         }
 
         if (existingUser) {
@@ -44,11 +34,11 @@ class GoogleOAuthService extends GoogleStrategy {
         }
         // if not found, create user
         let user
-        // try {
-        //   user = await UserService.createUser({ firstName: given_name, lastName: family_name, email, avatar: picture })
-        // } catch (error) {
-        //   return done(error, null)
-        // }
+        try {
+          user = await UserService.createUser({ firstName, lastName, email, picture })
+        } catch (error) {
+          return done(error)
+        }
         done(null, user)
       }
     )

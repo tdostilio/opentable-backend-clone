@@ -3,6 +3,7 @@ import mongoose from 'mongoose'
 import dotenv from 'dotenv'
 import cors from 'cors'
 import userRoutes from './routes/userRoutes'
+import authRoutes from './routes/authRoutes'
 import passport from 'passport'
 import setupPassport from './controllers/authController'
 import session from 'express-session'
@@ -33,16 +34,7 @@ setupPassport(passport)
 
 // Routes
 app.use(userRoutes)
-
-// Set up the routes for Google OAuth
-app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'], }), (req, res) => {
-  console.log('got here')
-})
-app.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/login' }), (req, res) => {
-  // Successful authentication, redirect home.
-  res.redirect('/')
-}
-)
+app.use(authRoutes)
 
 // Database connection
 mongoose.connect(process.env.MONGODB_URI!)

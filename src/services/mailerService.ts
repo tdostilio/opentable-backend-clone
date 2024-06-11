@@ -1,22 +1,22 @@
-import aws from 'aws-sdk'
+import { SESClient, SendEmailCommand, SendEmailCommandInput } from "@aws-sdk/client-ses"
 import dotenv from 'dotenv'
 
 
 dotenv.config()
 
 // Configure AWS SDK
-aws.config.update({
-  accessKeyId: process.env.AWS_ACCESS_KEY, // replace with your access key id
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY, // replace with your secret access key
-  region: 'us-east-1' // replace with the AWS region you're using for SES
-})
+// AWS SDK looks for these credentials
+if (!process.env.AWS_ACCESS_KEY_ID || !process.env.AWS_SECRET_ACCESS_KEY) {
+  throw new Error('AWS credentials not found in environment')
+}
 
-const ses = new aws.SES()
+const sesClient = new SESClient({ region: "us-east-1" })
 
 class MailerService {
-  static sendEmail = async (params: aws.SES.SendEmailRequest) => {
+  static sendEmail = async (params: SendEmailCommandInput) => {
     try {
-      return await ses.sendEmail(params).promise()
+      const command = new SendEmailCommand(params)
+      return await sesClient.send(command)
     } catch (err) {
       console.error(err)
       throw new Error(`Error sending email: ${err}`)
