@@ -14,13 +14,8 @@ router.get('/auth/google/callback', passport.authenticate('google', { failureRed
   res.redirect('/')
 })
 
-router.get('/auth/link', async (req, res, next) => {
-  passport.authenticate('magic-link', { failureRedirect: '/login' }, function (err: any, user: any, info: any, status: any) {
-    if (err) { return next(err) }
-    if (!user) { return res.redirect('/signin') }
-    res.redirect('/account')
-  })(req, res, next)
-  console.log('got here')
+router.get('/auth/link', passport.authenticate('magic-link', { failureRedirect: '/login' }), async (req, res, next) => {
+  res.redirect('/')
 })
 
 export default router
