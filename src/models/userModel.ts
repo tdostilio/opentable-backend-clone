@@ -10,7 +10,7 @@ export interface IUser extends Document {
     githubId?: string,
     magicLinkId?: string
   },
-  avatar?: string
+  picture?: string
 }
 
 const UserSchema: Schema = new Schema({
@@ -26,7 +26,7 @@ const UserSchema: Schema = new Schema({
     githubId: String,
     magicLinkId: String
   },
-  avatar: String,
+  picture: String,
   // other fields as needed
 })
 

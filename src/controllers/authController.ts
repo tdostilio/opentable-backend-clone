@@ -1,50 +1,34 @@
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20'
+import { Strategy as CustomStrategy } from 'passport-custom'
 import dotenv from 'dotenv'
 import User from '../models/userModel'
 import UserService from '../services/userService'
 import { PassportStatic } from 'passport'
+import GoogleOAuthService from '../services/googleOauthService'
 
 dotenv.config()
 
-interface GoogleProfile {
-  _json: {
-    email: string,
-    email_verified: boolean,
-    name: string,
-    picture: string,
-    given_name: string,
-    family_name: string
-  }
-  id: string
-}
-
 const setupPassport = (passport: PassportStatic) => {
-  passport.use(
-    // using 'any' as type definition for GoogleStrategy is currrently broken
-    new (GoogleStrategy as any)(
-      {
-        clientID: process.env.GOOGLE_CLIENT_ID as string,
-        clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
-        callbackURL: '/auth/google/callback',
-      },
-      async (accessToken: string, refreshToken: string, profile: GoogleProfile, done: (error: any, user?: any) => void) => {
-        const { email, given_name, family_name, picture } = profile._json
-        // what do I want to do here? lookup user by email, if not found, create user
-        let existingUser = await User.findOne({ email })
-
-        if (existingUser) {
-          return done(null, existingUser)
-        }
-        let user
-        try {
-          await UserService.createGoogleUser({ firstName: given_name, lastName: family_name, email, avatar: picture })
-        } catch (error) {
-          return done(error, null)
-        }
-        done(null, user)
+  passport.use('google', new GoogleOAuthService())
+  passport.use('magic-link', new CustomStrategy(async function (req: any, done: (error: any, user?: any, options?: any) => void) {
+    const email = req.body.email
+    if (!email) {
+      return done(new Error('Email is required'), null)
+    }
+    let user
+    try {
+      user = await User.findOne({ email })
+      if (!user) {
+        // if not found, create user
+        user = await UserService.createUser({ email })
       }
-    )
-  )
+    } catch (err) {
+      return done(err, null)
+    }
+
+    // send magic link
+    // const magicLink = await MagicLinkService.createMagicLink(user)
+  }))
 
   passport.serializeUser(function (user, done) {
     done(null, user.id)
