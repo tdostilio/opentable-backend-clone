@@ -5,45 +5,21 @@ import MailerService from './mailerService'
 
 class MagicLinkService extends Strategy {
   constructor() {
-    super((req: any, done: VerifiedCallback) => {
-      const email = process.env.AWS_VERIFIED_EMAIL || req.body.email
+    super(async (req: any, done: VerifiedCallback) => {
+      const email = req.body.email || process.env.AWS_VERIFIED_EMAIL
       if (!email) {
         return done(new Error('Email is required'))
       }
-
-      User.findOne({ email })
-        .then((user: IUser | null) => {
-          if (!user) {
-            // if not found, create user
-            UserService.createUser({ email })
-              .then((newUser: IUser) => {
-                user = newUser
-                MailerService.sendMagicLink(email, 'http://localhost:3000/auth/magic-link')
-                  .then(() => {
-                    done(null, user)
-                  })
-                  .catch(err => {
-                    return done(err)
-                  })
-              })
-
-              .catch(err => {
-                return done(err)
-              })
-          } else {
-            MailerService.sendMagicLink(email, 'http://localhost:3000/auth/magic-link')
-              .then(() => {
-                done(null, user)
-              })
-              .catch(err => {
-                return done(err)
-              })
-          }
-        })
-        .catch(err => {
-          return done(err)
-        })
-
+      try {
+        let user: IUser | null = await User.findOne({ email })
+        if (!user) {
+          user = await UserService.createUser({ email })
+        }
+        await MailerService.sendMagicLink(user.email, 'http://localhost:3000/auth/magic-link')
+        done(null, user)
+      } catch (err) {
+        return done(err)
+      }
     })
   }
 }
