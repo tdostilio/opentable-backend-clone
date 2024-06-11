@@ -8,11 +8,14 @@ import passport from 'passport'
 import setupPassport from './controllers/authController'
 import session from 'express-session'
 
+// Load environment variables and configure passport
 dotenv.config()
+setupPassport(passport)
 
+// Create express app
 const app: Application = express()
 
-// Middleware
+// Add middleware
 app.use(cors())
 app.use(express.json())
 app.use(session({
@@ -25,16 +28,14 @@ app.use(session({
   }
 }))
 
-// Initialize passport and set up express to use it
+// Initialize passport with express
 app.use(passport.initialize())
 app.use(passport.session())
-// Set up passport with the Google strategy
-setupPassport(passport)
 
-
-// Routes
+// Add routes
 app.use(userRoutes)
 app.use(authRoutes)
+
 
 // Database connection
 mongoose.connect(process.env.MONGODB_URI!)
