@@ -6,7 +6,7 @@ import MailerService from './mailerService'
 class MagicLinkService extends Strategy {
   constructor() {
     super((req: any, done: VerifiedCallback) => {
-      const email = 'tdostilio@gmail.com' //req.body.email
+      const email = process.env.AWS_VERIFIED_EMAIL || req.body.email
       if (!email) {
         return done(new Error('Email is required'))
       }
@@ -16,12 +16,15 @@ class MagicLinkService extends Strategy {
           if (!user) {
             // if not found, create user
             UserService.createUser({ email })
-              .then(newUser => {
+              .then((newUser: IUser) => {
                 user = newUser
-                return MailerService.sendMagicLink(email, 'http://localhost:3000/auth/magic-link')
+                MailerService.sendMagicLink(email, 'http://localhost:3000/auth/magic-link')
               })
               .then(() => {
                 done(null, user)
+              })
+              .catch(err => {
+                return done(err)
               })
               .catch(err => {
                 return done(err)
