@@ -8,8 +8,6 @@ export class UserController {
     this.userService = userService
   }
 
-  // TODO -- delete these methods, they should be in authController
-  // this file will be for performing user actions, not creating or updating them
   async createUser(req: Request, res: Response) {
     const { firstName, lastName, email } = req.body
     const user = await this.userService.createUser(req.body)

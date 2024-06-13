@@ -1,6 +1,6 @@
 import User from '../models/userModel'
 import { PassportStatic } from 'passport'
-import GoogleOAuthService from '../services/googleOAuthService'
+import GoogleOAuthService from '../services/googleOauthService'
 import MagicLinkService from '../services/magicLinkService'
 
 const setupPassport = (passport: PassportStatic) => {

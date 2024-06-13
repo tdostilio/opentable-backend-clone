@@ -12,17 +12,6 @@ class UserService {
     }
   }
 
-  public async createGoogleUser(userDetails: Partial<IUser>) {
-    try {
-      const user = new User(userDetails)
-      await user.save()
-      return user
-    } catch (error) {
-      console.error('Error creating Google user:', error)
-      throw error
-    }
-  }
-
   public async updateUser(id: string, updates: Partial<IUser>) {
     try {
       const user = await User.findByIdAndUpdate(id, updates, { new: true })

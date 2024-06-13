@@ -27,7 +27,7 @@ const UserSchema: Schema = new Schema({
     magicLinkId: String
   },
   picture: String,
-  // other fields as needed
+  // Add other fields as needed
 })
 
 export default mongoose.model<IUser>('User', UserSchema)
