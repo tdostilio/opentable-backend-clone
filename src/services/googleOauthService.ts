@@ -1,4 +1,4 @@
-import UserService from '../services/userService'
+import UserService from './userService'
 import { Strategy as GoogleStrategy, VerifyCallback } from 'passport-google-oauth20'
 import { Profile } from 'passport'
 import User from '../models/userModel'
@@ -9,7 +9,8 @@ class GoogleOAuthService extends GoogleStrategy {
       {
         clientID: process.env.GOOGLE_CLIENT_ID as string,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
-        callbackURL: '/auth/google/callback'
+        callbackURL: '/auth/google/callback',
+        scope: ['email', 'profile']
       },
       async (accessToken: string, refreshToken: string, profile: Profile, done: VerifyCallback) => {
         const { id, displayName, emails, name, photos } = profile

@@ -6,3 +6,9 @@ declare global {
     interface User extends IUser { }
   }
 }
+
+declare module 'express-session' {
+  export interface SessionData {
+    passport: { user: string }
+  }
+}

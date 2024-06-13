@@ -6,15 +6,13 @@ import MailerService from '../services/mailerService'
 
 const router = express.Router()
 
-// Set up the routes for Google OAuth
-router.get('/auth/google', (req, res) => {
-  console.log('got here')
-})
+// Google OAuth
 router.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/login' }), (req, res) => {
   // Successful authentication, redirect home.
   res.redirect('/')
 })
 
+// Magic Link
 router.get('/auth/link', async (req, res, next) => {
   try {
     // send email with magic link

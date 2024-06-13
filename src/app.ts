@@ -35,6 +35,12 @@ app.use(passport.session())
 // Add routes
 app.use(userRoutes)
 app.use(authRoutes)
+app.get('/', (req: Request, res: Response) => {
+  if (req.session?.passport?.user) {
+    return res.send(`<h1>Logged in with user: ${req.session?.passport?.user}</h1>`)
+  }
+  res.send('<h1>No user on session</h1>')
+})
 
 
 // Database connection
