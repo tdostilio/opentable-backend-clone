@@ -5,7 +5,7 @@ import cors from 'cors'
 import userRoutes from './routes/userRoutes'
 import authRoutes from './routes/authRoutes'
 import passport from 'passport'
-import setupPassport from './controllers/authController'
+import setupPassport from './middleware/auth'
 import session from 'express-session'
 
 // Load environment variables and configure passport
