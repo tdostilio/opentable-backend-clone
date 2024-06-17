@@ -1,16 +1,17 @@
 import UserService from './userService'
-import { Strategy as GoogleStrategy, VerifyCallback } from 'passport-google-oauth20'
+import { Strategy as GithubStrategy } from 'passport-github2'
+import { VerifyCallback } from 'passport-google-oauth20'
 import { Profile } from 'passport'
 import User from '../models/userModel'
 
-class GoogleOAuthService extends GoogleStrategy {
+class GithubAuthService extends GithubStrategy {
   constructor() {
     super(
       {
-        clientID: process.env.GOOGLE_CLIENT_ID as string,
-        clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
-        callbackURL: '/auth/google/callback',
-        scope: ['email', 'profile']
+        clientID: process.env.GITHUB_CLIENT_ID as string,
+        clientSecret: process.env.GITHUB_CLIENT_SECRET as string,
+        callbackURL: '/auth/github/callback',
+        scope: ['user:email']
       },
       async (accessToken: string, refreshToken: string, profile: Profile, done: VerifyCallback) => {
         const { id, displayName, emails, name, photos } = profile
@@ -47,4 +48,4 @@ class GoogleOAuthService extends GoogleStrategy {
 }
 
 
-export default GoogleOAuthService
+export default GithubAuthService

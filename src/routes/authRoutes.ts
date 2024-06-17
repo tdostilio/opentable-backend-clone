@@ -12,6 +12,12 @@ router.get('/auth/google/callback', passport.authenticate('google', { failureRed
   res.redirect('/')
 })
 
+// GitHub OAuth
+router.get('/auth/github/callback', passport.authenticate('github', { failureRedirect: '/login' }), (req, res) => {
+  // Successful authentication, redirect home.
+  res.redirect('/')
+})
+
 // Magic Link
 router.get('/auth/link', async (req, res, next) => {
   try {
