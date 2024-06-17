@@ -5,7 +5,7 @@ import cors from 'cors'
 import userRoutes from './routes/userRoutes'
 import authRoutes from './routes/authRoutes'
 import passport from 'passport'
-import setupPassport from './middleware/auth'
+import { setupPassport } from './middleware/authMiddleware'
 import session from 'express-session'
 
 // Load environment variables and configure passport
@@ -35,11 +35,12 @@ app.use(passport.session())
 // Add routes
 app.use(userRoutes)
 app.use(authRoutes)
+// Placeholder login route
 app.get('/', (req: Request, res: Response) => {
-  if (req.session?.passport?.user) {
-    return res.send(`<h1>Logged in with user: ${req.session?.passport?.user}</h1>`)
+  if (req.user) {
+    return res.send(`<h1>Logged in with user: ${JSON.stringify(req.user)}</h1>`)
   }
-  res.send('<h1>No user on session</h1>')
+  res.send('<h1>Please log in</h1>')
 })
 
 
