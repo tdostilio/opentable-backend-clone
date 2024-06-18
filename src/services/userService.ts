@@ -12,6 +12,19 @@ class UserService {
     }
   }
 
+  public async getUser(id: string) {
+    let user
+    try {
+      user = await User.findOne({ _id: id })
+      if (!user) {
+        throw new Error('User not found')
+      }
+      return user
+    } catch (error) {
+      throw error
+    }
+  }
+
   public async updateUser(id: string, updates: Partial<IUser>) {
     try {
       const user = await User.findByIdAndUpdate(id, updates, { new: true })
@@ -22,7 +35,6 @@ class UserService {
     }
   }
 
-  // Add other methods as needed
 }
 
 export default new UserService()
