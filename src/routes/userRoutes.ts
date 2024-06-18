@@ -6,8 +6,7 @@ import passport from 'passport'
 const router = express.Router()
 const userController = new UserController(UserService)
 
-// not used in this example, but here's how you would use the controller
-// router.post('/users', (req, res) => userController.createUser(req, res))
+// Simple example of a protected route
 router.get('/users/:id', passport.authenticate('session'), (req, res) => userController.getUser(req, res))
 
 export default router
