@@ -35,8 +35,9 @@ app.use(passport.session())
 // Add routes
 app.use(userRoutes)
 app.use(authRoutes)
-// Placeholder login route
-app.get('/', (req: Request, res: Response) => {
+
+// Placeholder login route to check if user is logged in
+app.get('/login', (req: Request, res: Response) => {
   if (req.user) {
     return res.send(`<h1>Logged in with user: ${JSON.stringify(req.user)}</h1>`)
   }

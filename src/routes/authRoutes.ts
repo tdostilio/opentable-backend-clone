@@ -9,13 +9,13 @@ const router = express.Router()
 // Google OAuth
 router.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/login' }), (req, res) => {
   // Successful authentication, redirect home.
-  res.redirect('/')
+  res.redirect('/login')
 })
 
 // GitHub OAuth
 router.get('/auth/github/callback', passport.authenticate('github', { failureRedirect: '/login' }), (req, res) => {
   // Successful authentication, redirect home.
-  res.redirect('/')
+  res.redirect('/login')
 })
 
 // Magic Link
@@ -33,7 +33,7 @@ router.get('/auth/link', async (req, res, next) => {
 })
 
 router.get('/auth/link/callback', passport.authenticate('magic-link', { failureRedirect: '/login' }), async (req, res, next) => {
-  res.redirect('/')
+  res.redirect('/login')
 })
 
 export default router
